@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: auth-service
+
+#Data-Base
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: ${DB_URL}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+    open-in-view: false
