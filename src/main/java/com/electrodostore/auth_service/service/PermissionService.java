@@ -1,7 +1,7 @@
 package com.electrodostore.auth_service.service;
 
-import com.electrodostore.auth_service.dto.PermissionRequestDto;
-import com.electrodostore.auth_service.dto.PermissionResponseDto;
+import com.electrodostore.auth_service.dto.permission.PermissionRequestDto;
+import com.electrodostore.auth_service.dto.permission.PermissionResponseDto;
 import com.electrodostore.auth_service.exception.PermissionNotFoundException;
 import com.electrodostore.auth_service.model.Permission;
 import com.electrodostore.auth_service.repository.IPermissionRepository;

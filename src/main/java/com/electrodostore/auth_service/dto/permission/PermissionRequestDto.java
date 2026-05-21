@@ -1,4 +1,4 @@
-package com.electrodostore.auth_service.dto;
+package com.electrodostore.auth_service.dto.permission;
 
 import jakarta.validation.constraints.NotBlank;
 
