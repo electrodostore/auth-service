@@ -49,4 +49,12 @@ public class GlobalExceptionHandler {
                         buildResponseError(HttpStatus.NOT_FOUND, ex.getMessage())
                 );
     }
+
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public ResponseEntity<ApiErrorResponse> handlerUsernameAlreadyExists(UsernameAlreadyExistsException ex){
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(
+                        buildResponseError(HttpStatus.CONFLICT, ex.getMessage())
+                );
+    }
 }
