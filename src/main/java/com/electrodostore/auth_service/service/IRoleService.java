@@ -15,6 +15,8 @@ import java.util.Set;
  */
 public interface IRoleService {
 
+    void validarEstadoDeRoles(List<Role> roles);
+
     List<RoleResponseDto> buildRolesResponse(List<Role> listRoles);
 
     List<Role> findAllRolesByNames(Set<String> rolesNames);
