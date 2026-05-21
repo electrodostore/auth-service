@@ -5,6 +5,7 @@ import com.electrodostore.auth_service.dto.user.UserResponseDto;
 import com.electrodostore.auth_service.exception.InvalidRoleAssignmentException;
 import com.electrodostore.auth_service.exception.UserNotFoundException;
 import com.electrodostore.auth_service.exception.UsernameAlreadyExistsException;
+import com.electrodostore.auth_service.model.Role;
 import com.electrodostore.auth_service.model.UserSec;
 import com.electrodostore.auth_service.repository.IUserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -103,7 +104,7 @@ public class UserService implements IUserService {
             throw new InvalidRoleAssignmentException("Los usuarios con el rol CLIENTE deben registrarse a través del flujo de registro de clientes");
         }
 
-        //Construcción de la entidad usuario
+        //Construcción de la entidad Usuario
         UserSec objUser = new UserSec();
 
         objUser.setUsername(newUser.username());
@@ -111,11 +112,17 @@ public class UserService implements IUserService {
         //La contraseña se almacena usando hash BCrypt
         objUser.setPassword(passwordEncoder.encode(newUser.password()));
 
-        //Busca y asigna los roles enviados en la petición
+        List<Role> listRoles = roleService.findAllRolesByNames(
+                new LinkedHashSet<>(newUser.rolesNames())
+        );
+
+        //Verifica que todos los roles asignados al usuario estén activos
+        roleService.validarEstadoDeRoles(listRoles);
+
+        //Asigna los roles enviados en la petición
         objUser.setListRoles(
                 new LinkedHashSet<>(
-
-                        roleService.findAllRolesByNames(new LinkedHashSet<>(newUser.rolesNames()))
+                        listRoles
                 )
         );
 
@@ -148,9 +155,16 @@ public class UserService implements IUserService {
             throw new InvalidRoleAssignmentException("Los usuarios con rol 'CLIENT' deben registrarse a través del flujo de registro correspondiente");
         }
 
-        //Busca y agrega los nuevos roles al usuario
+        List<Role> listRoles = roleService.findAllRolesByNames(
+                new LinkedHashSet<>(newRolesNames)
+        );
+
+        //Verifica que todos los roles nuevos estén activos
+        roleService.validarEstadoDeRoles(listRoles);
+
+        //Agrega los nuevos roles al usuario
         user.getListRoles().addAll(
-                roleService.findAllRolesByNames(new LinkedHashSet<>(newRolesNames))
+                listRoles
         );
 
         return buildUserResponse(user);
