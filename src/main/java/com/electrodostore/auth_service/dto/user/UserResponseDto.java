@@ -6,5 +6,7 @@ import java.util.List;
 
 public record UserResponseDto (Long id,
                                String RoleName,
-                               List<RoleResponseDto> roles){
+                               List<RoleResponseDto> roles,
+                               Long clientId,
+                               boolean unabled){
 }
