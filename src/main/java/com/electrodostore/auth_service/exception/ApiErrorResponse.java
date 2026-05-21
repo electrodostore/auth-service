@@ -1,11 +1,9 @@
-package com.electrodostore.auth_service.dto;
-
-import org.springframework.http.HttpStatus;
+package com.electrodostore.auth_service.exception;
 
 import java.time.LocalDateTime;
 
 /**
- * DTO que define la estructura del cuerpo
+ * Define la estructura del cuerpo
  * de las excepciones personalizadas de la API
  */
 public record ApiErrorResponse(
