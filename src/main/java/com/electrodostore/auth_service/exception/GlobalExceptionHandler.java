@@ -33,4 +33,12 @@ public class GlobalExceptionHandler {
                         buildResponseError(HttpStatus.NOT_FOUND, ex.getMessage())
                 );
     }
+
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handlerRoleNotFound(RoleNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(
+                        buildResponseError(HttpStatus.NOT_FOUND, ex.getMessage())
+                );
+    }
 }
