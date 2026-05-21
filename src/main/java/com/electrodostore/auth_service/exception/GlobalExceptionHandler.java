@@ -57,4 +57,12 @@ public class GlobalExceptionHandler {
                         buildResponseError(HttpStatus.CONFLICT, ex.getMessage())
                 );
     }
+
+    @ExceptionHandler(InvalidRoleAssignmentException.class)
+    public ResponseEntity<ApiErrorResponse> handlerInvalidRoleAssignment(InvalidRoleAssignmentException ex){
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(
+                        buildResponseError(HttpStatus.CONFLICT, ex.getMessage())
+                );
+    }
 }
