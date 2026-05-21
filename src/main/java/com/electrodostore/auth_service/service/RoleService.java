@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 //Service encargado de la lógica de negocio del dominio <<Role>>
 @Service
@@ -44,6 +45,7 @@ public class RoleService implements IRoleService{
     }
 
     //Construye una lista de DTOs de respuesta a partir de una lista de roles
+    @Override
     public List<RoleResponseDto> buildRolesResponse(List<Role> listRoles){
 
         List<RoleResponseDto> rolesExponer = new ArrayList<>();
@@ -61,6 +63,20 @@ public class RoleService implements IRoleService{
                 .orElseThrow(
                         () -> new RoleNotFoundException("No se encontró role con Id: " + id)
                 );
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Role> findAllRolesByNames(Set<String> rolesNames){
+        //Lista de roles encontrados
+        List<Role> foundRoles = roleRepo.findAllByNameIn(rolesNames);
+
+        //Validamos que se haya hecho la carga total de los roles solicitados
+        if(foundRoles.size() < rolesNames.size()){
+            throw new RoleNotFoundException("Uno o varios roles no fueron encontrados");
+        }
+
+        return foundRoles;
     }
 
     @Transactional(readOnly = true)
