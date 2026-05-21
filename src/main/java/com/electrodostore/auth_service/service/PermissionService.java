@@ -82,7 +82,7 @@ public class PermissionService implements IPermissionService {
 
         Permission permission = new Permission(
                 null,
-                newPermission.PermissionName()
+                newPermission.permissionName()
         );
 
         permissionRepo.save(permission);
