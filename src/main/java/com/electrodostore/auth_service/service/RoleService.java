@@ -44,15 +44,6 @@ public class RoleService implements IRoleService{
         if(!objRole.isActive()){throw new RoleNotFoundException("No se encontró rol con nombre: " + objRole.getName() + " disponible");}
     }
 
-    //Valida que todos los roles de una lista se encuentren activos
-    @Override
-    public void validarEstadoDeRoles(List<Role> roles){
-        roles.forEach(
-                //Iteramos sobre la lista y pasamos cada elemento al método this.validarEstadoDeRol
-                this::validarEstadoDeRol
-        );
-    }
-
     //Construye una lista de DTOs de respuesta a partir de una lista de roles
     @Override
     public List<RoleResponseDto> buildRolesResponse(List<Role> listRoles){
@@ -84,6 +75,11 @@ public class RoleService implements IRoleService{
         if(foundRoles.size() < rolesNames.size()){
             throw new RoleNotFoundException("Uno o varios roles no fueron encontrados");
         }
+
+        //Iteramos sobre la lista y validamos que todos los roles se encuentren activos
+        foundRoles.forEach(
+                this::validarEstadoDeRol
+        );
 
         return foundRoles;
     }
