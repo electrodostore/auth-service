@@ -2,34 +2,5 @@ spring:
   application:
     name: auth-service
 
-#Data-Base
-  datasource:
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    url: ${DB_URL}
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-
-    database-platform: org.hibernate.dialect.MySQLDialect
-
-    open-in-view: false
-
-#Clave privada y pública para firma y validación de JWT
-jwt:
-  private:
-    key: classpath:keys/private.pem
-  public:
-    key: classpath:keys/public.pem
-
-  user:
-    generator: ${JWT_USER_GENERATOR}
-
-eureka:
-  client:
-    service-url:
-      defaultZone: ${EUREKA_URL}
-
-server:
-  port: 7474
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URL}
