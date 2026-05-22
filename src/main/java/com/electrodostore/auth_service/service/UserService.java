@@ -1,10 +1,12 @@
 package com.electrodostore.auth_service.service;
 
+import com.electrodostore.auth_service.dto.user.ClientUserRequestDto;
 import com.electrodostore.auth_service.dto.user.UserRequestDto;
 import com.electrodostore.auth_service.dto.user.UserResponseDto;
 import com.electrodostore.auth_service.exception.InvalidRoleAssignmentException;
 import com.electrodostore.auth_service.exception.UserNotFoundException;
 import com.electrodostore.auth_service.exception.UsernameAlreadyExistsException;
+import com.electrodostore.auth_service.integration.cliente.ClienteIntegrationService;
 import com.electrodostore.auth_service.model.Role;
 import com.electrodostore.auth_service.model.UserSec;
 import com.electrodostore.auth_service.repository.IUserRepository;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 //Service encargado de la lógica de negocio del dominio <<User>>
 @Service
@@ -24,11 +27,13 @@ public class UserService implements IUserService {
     private final IUserRepository userRepo;
     private final IRoleService roleService;
     private final PasswordEncoder passwordEncoder;
+    private final ClienteIntegrationService clienteIntegration;
 
-    public UserService(IUserRepository userRepo, RoleService roleService, PasswordEncoder passwordEncoder) {
+    public UserService(IUserRepository userRepo, RoleService roleService, PasswordEncoder passwordEncoder, ClienteIntegrationService clienteIntegration) {
         this.userRepo = userRepo;
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
+        this.clienteIntegration = clienteIntegration;
     }
 
     //Método propio para validar si un username asignado a un usuario no existe ya en la base de datos
@@ -117,9 +122,6 @@ public class UserService implements IUserService {
                 new LinkedHashSet<>(newUser.rolesNames())
         );
 
-        //Verifica que todos los roles asignados al usuario estén activos
-        roleService.validarEstadoDeRoles(listRoles);
-
         //Asigna los roles enviados en la petición
         objUser.setListRoles(
                 new LinkedHashSet<>(
@@ -130,6 +132,34 @@ public class UserService implements IUserService {
         UserSec savedUser = userRepo.save(objUser);
 
         return buildUserResponse(savedUser);
+    }
+
+    @Override
+    public UserResponseDto registerClientUser(ClientUserRequestDto clientUserDTO) {
+        //Verificar que el username no se encuentre registrado
+        validarUsername(clientUserDTO.username());
+
+        Long clientId = clienteIntegration.saveCliente(
+                clientUserDTO.client()
+        );
+
+        UserSec newUser = new UserSec();
+
+        newUser.setUsername(clientUserDTO.username());
+        newUser.setPassword(passwordEncoder.encode(clientUserDTO.password()));
+        newUser.setClienteId(clientId);
+
+        //Asigna rol "CLIENT" al usuario automáticamente
+        newUser.setListRoles(
+                new LinkedHashSet<>(
+                        roleService.findAllRolesByNames(Set.of("CLIENT"))
+                )
+        );
+
+        return buildUserResponse(
+                userRepo.save(newUser)
+        );
+
     }
 
     @Transactional
@@ -159,9 +189,6 @@ public class UserService implements IUserService {
         List<Role> listRoles = roleService.findAllRolesByNames(
                 new LinkedHashSet<>(newRolesNames)
         );
-
-        //Verifica que todos los roles nuevos estén activos
-        roleService.validarEstadoDeRoles(listRoles);
 
         //Agrega los nuevos roles al usuario
         user.getListRoles().addAll(

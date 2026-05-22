@@ -22,7 +22,7 @@ public interface IUserService {
      * Método de registro público de usuarios, cuyos usuarios registrados serán
      * catalogados con rol CLIENTE automáticamente
      */
-//    UserResponseDto registerClientUser(ClientUserRequestDto clientUserDTO);
+    UserResponseDto registerClientUser(ClientUserRequestDto clientUserDTO);
 
     //Soft Delete
     void disableUser(Long id);
