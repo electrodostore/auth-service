@@ -65,4 +65,12 @@ public class GlobalExceptionHandler {
                         buildResponseError(HttpStatus.CONFLICT, ex.getMessage())
                 );
     }
+
+    @ExceptionHandler(ServiceUnavailable.class)
+    public ResponseEntity<ApiErrorResponse> handlerServiceUnavailable(ServiceUnavailable ex){
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(
+                        buildResponseError(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage())
+                );
+    }
 }
