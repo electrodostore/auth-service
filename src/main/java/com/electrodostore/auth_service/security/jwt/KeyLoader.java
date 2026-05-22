@@ -1,5 +1,7 @@
 package com.electrodostore.auth_service.security.jwt;
 
+import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -24,63 +26,66 @@ public class KeyLoader {
      * a objetos RSA utilizables por Java.
      */
     @Value("${jwt.private.key}")
-    public Resource privateKeyResource;
+    private Resource privateKeyResource;
 
     @Value("${jwt.public.key}")
-    public Resource publicKeyResource;
+    private Resource publicKeyResource;
 
-
-    /**
-     * Convierte el archivo PEM de clave privada
-     * en un objeto RSAPrivateKey.
-     *
-     * PKCS8 es el formato estándar para claves privadas.
-     */
-    public RSAPrivateKey getPrivateKey() throws Exception {
-
-        String key = new String(
-                privateKeyResource.getInputStream().readAllBytes()
-        );
-
-        key = key
-                .replace("-----BEGIN PRIVATE KEY-----", "")
-                .replace("-----END PRIVATE KEY-----", "")
-                .replaceAll("\\s", "");
-
-        byte[] decoded = Base64.getDecoder().decode(key);
-
-        PKCS8EncodedKeySpec spec =
-                new PKCS8EncodedKeySpec(decoded);
-
-        KeyFactory factory = KeyFactory.getInstance("RSA");
-
-        return (RSAPrivateKey) factory.generatePrivate(spec);
-    }
+    @Getter
+    private RSAPrivateKey privateKey;
+    @Getter
+    private RSAPublicKey publicKey;
 
     /**
-     * Convierte el archivo PEM de clave pública
-     * en un objeto RSAPublicKey.
-     *
-     * X509 es el formato estándar para claves públicas.
+     * Carga y transforma las claves PEM a objetos RSA
+     * después de inicializar el bean.
      */
-    public RSAPublicKey getPublicKey() throws Exception {
+    @PostConstruct
+    public void init(){
 
-        String key = new String(
-                publicKeyResource.getInputStream().readAllBytes()
-        );
+        try{
+            //Carga de clave privada RSA (PKCS8)
+            KeyFactory factory = KeyFactory.getInstance("RSA");
 
-        key = key
-                .replace("-----BEGIN PUBLIC KEY-----", "")
-                .replace("-----END PUBLIC KEY-----", "")
-                .replaceAll("\\s", "");
+            String privateKeyContent = new String(
+                    privateKeyResource.getInputStream().readAllBytes()
+            );
 
-        byte[] decoded = Base64.getDecoder().decode(key);
+            privateKeyContent = privateKeyContent
+                    .replace("-----BEGIN PRIVATE KEY-----", "")
+                    .replace("-----END PRIVATE KEY-----", "")
+                    .replaceAll("\\s", "");
 
-        X509EncodedKeySpec spec =
-                new X509EncodedKeySpec(decoded);
+            byte[] decodedPrivateKey = Base64.getDecoder().decode(privateKeyContent);
 
-        KeyFactory factory = KeyFactory.getInstance("RSA");
+            PKCS8EncodedKeySpec spec =
+                    new PKCS8EncodedKeySpec(decodedPrivateKey);
 
-        return (RSAPublicKey) factory.generatePublic(spec);
+            this.privateKey= (RSAPrivateKey) factory.generatePrivate(spec);
+
+            //carga de clave pública RSA (X509)
+            String publicKeyContent = new String(
+                    publicKeyResource.getInputStream().readAllBytes()
+            );
+
+            publicKeyContent = publicKeyContent
+                    .replace("-----BEGIN PUBLIC KEY-----", "")
+                    .replace("-----END PUBLIC KEY-----", "")
+                    .replaceAll("\\s", "");
+
+            byte[] decodedPublicKey = Base64.getDecoder().decode(publicKeyContent);
+
+            X509EncodedKeySpec specPublic =
+                    new X509EncodedKeySpec(decodedPublicKey);
+
+            this.publicKey = (RSAPublicKey) factory.generatePublic(specPublic);
+
+
+        }catch (Exception ex){
+            throw new IllegalStateException(
+                    "error cargando clave RSA", ex
+            );
+        }
     }
+
 }
