@@ -22,3 +22,6 @@ jwt:
     key: classpath:keys/private.pem
   public:
     key: classpath:keys/public.pem
+
+  user:
+    generator: ${JWT_USER_GENERATOR}
