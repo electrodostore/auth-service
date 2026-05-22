@@ -9,6 +9,7 @@ import com.electrodostore.auth_service.model.Role;
 import com.electrodostore.auth_service.model.UserSec;
 import com.electrodostore.auth_service.repository.IUserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +23,12 @@ public class UserService implements IUserService {
 
     private final IUserRepository userRepo;
     private final IRoleService roleService;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(IUserRepository userRepo, RoleService roleService) {
+    public UserService(IUserRepository userRepo, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
         this.roleService = roleService;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
     //Método propio para validar si un username asignado a un usuario no existe ya en la base de datos
