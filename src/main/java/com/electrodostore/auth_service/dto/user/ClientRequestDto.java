@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Pattern;
  * los usuarios que se registran como clientes
  */
 public record ClientRequestDto(@NotBlank  String name,
-                               @NotBlank @Pattern(regexp = "\\d") String cellphone,
-                               @NotBlank @Pattern(regexp = "\\d") String document,
+                               @NotBlank @Pattern(regexp = "\\d+") String cellphone,
+                               @NotBlank @Pattern(regexp = "\\d+") String document,
                                @NotBlank String address) {
 }
