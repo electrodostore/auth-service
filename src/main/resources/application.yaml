@@ -15,3 +15,10 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
 
     open-in-view: false
+
+#Clave privada y pública para firma y validación de JWT
+jwt:
+  private:
+    key: classpath:keys/private.pem
+  public:
+    key: classpath:keys/public.pem
