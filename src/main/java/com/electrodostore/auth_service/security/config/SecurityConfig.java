@@ -35,4 +35,14 @@ public class SecurityConfig {
                 .build();
     }
 
+    /**
+     * Gestiona los proveedores de autenticación y escoge el más adecuado teniendo
+     * en cuenta al mecánismo de autenticación que se esté usando
+     */
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+
 }
