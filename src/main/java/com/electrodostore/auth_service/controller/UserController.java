@@ -1,5 +1,6 @@
 package com.electrodostore.auth_service.controller;
 
+import com.electrodostore.auth_service.dto.user.ClientUserRequestDto;
 import com.electrodostore.auth_service.dto.user.UserRequestDto;
 import com.electrodostore.auth_service.dto.user.UserResponseDto;
 import com.electrodostore.auth_service.service.IUserService;
@@ -42,6 +43,15 @@ public class UserController {
     public ResponseEntity<UserResponseDto> saveUser(@Valid @RequestBody UserRequestDto newUser){
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userService.saveUser(newUser));
+    }
+
+    //Registro públicos de clientes autenticables
+    @PostMapping("/register")
+    public ResponseEntity<UserResponseDto> saveClientUser(@Valid @RequestBody ClientUserRequestDto newClientUser){
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(
+                        userService.registerClientUser(newClientUser)
+                );
     }
 
     @DeleteMapping("/{id}")
