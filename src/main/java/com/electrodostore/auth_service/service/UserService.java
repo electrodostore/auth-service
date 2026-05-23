@@ -168,8 +168,14 @@ public class UserService implements IUserService {
 
         UserSec objUser = findUser(id);
 
-        //Deshabilitación lógica de la cuenta de usuario
+        //Si el usuario es cliente, debemos deshabilitar la identidad de negocio de este
+        if(objUser.getClienteId() != null){
+            clienteIntegration.disableClient(objUser.getClienteId());
+        }
+
+        //Deshabilitación lógica de la cuenta del usuario
         objUser.setEnabled(false);
+
 
     }
 
