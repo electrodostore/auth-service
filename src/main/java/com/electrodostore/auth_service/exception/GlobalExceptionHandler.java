@@ -17,11 +17,12 @@ public class GlobalExceptionHandler {
     /**
      * Construye el cuerpo estándar para respuestas de error.
      */
-    private ApiErrorResponse buildResponseError(HttpStatus status, String message){
+    private ApiErrorResponse buildResponseError(HttpStatus status, String message, ErrorCode errorCode){
         return new ApiErrorResponse(
                 LocalDateTime.now(),
                 status.value(),
                 status.getReasonPhrase(),
+                errorCode,
                 message
         );
     }
@@ -30,7 +31,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handlerPermissionNotFound(PermissionNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(
-                        buildResponseError(HttpStatus.NOT_FOUND, ex.getMessage())
+                        buildResponseError(HttpStatus.NOT_FOUND, ex.getMessage(), ex.getErrorCode())
                 );
     }
 
@@ -38,7 +39,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handlerRoleNotFound(RoleNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(
-                        buildResponseError(HttpStatus.NOT_FOUND, ex.getMessage())
+                        buildResponseError(HttpStatus.NOT_FOUND, ex.getMessage(), ex.getErrorCode())
                 );
     }
 
@@ -46,7 +47,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handlerUserNotFound(UserNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(
-                        buildResponseError(HttpStatus.NOT_FOUND, ex.getMessage())
+                        buildResponseError(HttpStatus.NOT_FOUND, ex.getMessage(), ex.getErrorCode())
                 );
     }
 
@@ -54,7 +55,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handlerUsernameAlreadyExists(UsernameAlreadyExistsException ex){
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(
-                        buildResponseError(HttpStatus.CONFLICT, ex.getMessage())
+                        buildResponseError(HttpStatus.CONFLICT, ex.getMessage(), ex.getErrorCode())
                 );
     }
 
@@ -62,7 +63,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handlerInvalidRoleAssignment(InvalidRoleAssignmentException ex){
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(
-                        buildResponseError(HttpStatus.CONFLICT, ex.getMessage())
+                        buildResponseError(HttpStatus.CONFLICT, ex.getMessage(), ex.getErrorCode())
                 );
     }
 
@@ -70,7 +71,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handlerServiceUnavailable(ServiceUnavailable ex){
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(
-                        buildResponseError(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage())
+                        buildResponseError(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), ex.getErrorCode())
                 );
     }
 }

@@ -10,6 +10,7 @@ public record ApiErrorResponse(
         LocalDateTime timestamp,
         Integer status,
         String error,
+        ErrorCode errorCode,
         String message
 ) {
 }
