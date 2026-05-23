@@ -74,4 +74,12 @@ public class GlobalExceptionHandler {
                         buildResponseError(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), ex.getErrorCode())
                 );
     }
+
+    @ExceptionHandler(ClienteNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handlerClienteNotFound(ClienteNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(
+                        buildResponseError(HttpStatus.NOT_FOUND, ex.getMessage(), ex.getErrorCode())
+                );
+    }
 }
