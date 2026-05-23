@@ -18,10 +18,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClienteIntegrationService {
 
-    private final ClienteFeignClient clienteClient;
+    private final ClienteFeignClient clienteFeignClient;
 
-    public ClienteIntegrationService(ClienteFeignClient clienteClient) {
-        this.clienteClient = clienteClient;
+    public ClienteIntegrationService(ClienteFeignClient clienteFeignClient) {
+        this.clienteFeignClient = clienteFeignClient;
     }
 
     /**
@@ -33,7 +33,7 @@ public class ClienteIntegrationService {
     @CircuitBreaker(name = "cliente-service", fallbackMethod = "fallbackSaveCliente")
     @Retry(name="cliente-service")
     public Long saveCliente(ClientRequestDto clienteNuevo){
-        return clienteClient.saveCliente(clienteNuevo);
+        return clienteFeignClient.saveCliente(clienteNuevo);
     }
 
     public Long fallbackSaveCliente(ClientRequestDto clienteNuevo, Throwable ex){
@@ -41,5 +41,19 @@ public class ClienteIntegrationService {
         log.warn("Fallback activado para método saveCliente", ex);
         throw new ServiceUnavailable("No fue posible establecer la comunicación con cliente-service, " +
                 "intente de nuevo mas tarde");
+    }
+
+    @CircuitBreaker(name = "cliente-service", fallbackMethod = "fallbackDisableClient")
+    @Retry(name = "cliente-service")
+    public void disableClient(Long clientId){
+        clienteFeignClient.disableClient(clientId);
+    }
+
+    public void fallbackDisableClient(Long clientId, Throwable ex){
+
+        log.warn("Fallback activado para método disableCliente, clientId={}", clientId, ex);
+        throw new ServiceUnavailable("No fue posible establecer la comunicación con cliente-service, " +
+                "intente de nuevo mas tarde");
+
     }
 }
