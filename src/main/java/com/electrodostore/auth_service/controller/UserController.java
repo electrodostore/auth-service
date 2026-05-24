@@ -15,7 +15,7 @@ import java.util.List;
 
 //Controlador para recibir las request de componente Users
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/auth/users")
 public class UserController {
 
     private final IUserService userService;

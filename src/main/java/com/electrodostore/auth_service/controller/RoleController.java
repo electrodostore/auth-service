@@ -14,7 +14,7 @@ import java.util.List;
 
 //Define endpoints o rutas de acceso a las operaciones de la entidad Role
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("/auth/roles")
 public class RoleController {
 
     private final IRoleService roleService;

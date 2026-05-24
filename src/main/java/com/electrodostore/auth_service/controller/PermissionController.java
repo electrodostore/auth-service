@@ -12,7 +12,7 @@ import java.util.List;
 
 //Define endpoints o rutas de acceso a las operaciones de la entidad Permission
 @RestController
-@RequestMapping("/permissions")
+@RequestMapping("/auth/permissions")
 public class PermissionController {
 
     private final IPermissionService permissionService;
