@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 /**
  * Cliente Feign para comunicación con cliente-service
  */
-@FeignClient(name = "cliente-service")
+@FeignClient(name = "cliente-service",
+             configuration = ClienteFeignConfig.class)
 public interface ClienteFeignClient {
 
     @PostMapping("/clientes")
