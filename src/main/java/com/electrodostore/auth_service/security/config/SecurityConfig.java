@@ -42,6 +42,15 @@ public class SecurityConfig {
                 .sessionManagement(sesion -> sesion.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 //Inicialmente, todas las requests son públicas
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+
+                /**
+                 * Configura el microservicio como OAuth2 Resource Server
+                 * para validar automáticamente tokens JWT.
+                 */
+                .oauth2ResourceServer(oauth2 ->
+                        oauth2.jwt(Customizer.withDefaults())
+                )
+
                 .build();
     }
 
