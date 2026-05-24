@@ -1,6 +1,8 @@
 package com.electrodostore.auth_service.integration.cliente;
 
 import com.electrodostore.auth_service.dto.user.ClientRequestDto;
+import com.electrodostore.auth_service.exception.ClienteNotFoundException;
+import com.electrodostore.auth_service.exception.DomainException;
 import com.electrodostore.auth_service.exception.ServiceUnavailable;
 import com.electrodostore.auth_service.integration.cliente.client.ClienteFeignClient;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -50,6 +52,11 @@ public class ClienteIntegrationService {
     }
 
     public void fallbackDisableClient(Long clientId, Throwable ex){
+
+        //Si el error es conocido, se lanza la excepción de dominio
+        if(ex instanceof DomainException e){
+            throw e;
+        }
 
         log.warn("Fallback activado para método disableCliente, clientId={}", clientId, ex);
         throw new ServiceUnavailable("No fue posible establecer la comunicación con cliente-service, " +
