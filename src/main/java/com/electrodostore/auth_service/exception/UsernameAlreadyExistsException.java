@@ -6,7 +6,7 @@ import lombok.Getter;
  *  ya está dentro de un registro en la base de datos
  */
 @Getter
-public class UsernameAlreadyExistsException extends RuntimeException {
+public class UsernameAlreadyExistsException extends DomainException {
     private final ErrorCode errorCode;
 
     public UsernameAlreadyExistsException(String message) {

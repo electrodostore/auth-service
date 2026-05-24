@@ -7,7 +7,7 @@ import lombok.Getter;
  * en cliente-service.
  */
 @Getter
-public class ClienteNotFoundException extends RuntimeException {
+public class ClienteNotFoundException extends DomainException {
     private final ErrorCode errorCode;
 
     public ClienteNotFoundException(String message) {

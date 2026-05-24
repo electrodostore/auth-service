@@ -3,7 +3,7 @@ package com.electrodostore.auth_service.exception;
 import lombok.Getter;
 
 @Getter
-public class UserNotFoundException extends RuntimeException {
+public class UserNotFoundException extends DomainException {
     private final ErrorCode errorCode;
 
     public UserNotFoundException(String message) {

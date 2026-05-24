@@ -4,7 +4,7 @@ import lombok.Getter;
 
 // Enviar una Response de error para informar que un rol no puede ser asignado a un usuario
 @Getter
-public class InvalidRoleAssignmentException extends RuntimeException {
+public class InvalidRoleAssignmentException extends DomainException {
     private final ErrorCode errorCode;
 
     public InvalidRoleAssignmentException(String message) {
