@@ -1,9 +1,11 @@
 package com.electrodostore.auth_service.service;
 
 import com.electrodostore.auth_service.dto.user.ClientUserRequestDto;
+import com.electrodostore.auth_service.dto.user.UpdateUsernameRequestDto;
 import com.electrodostore.auth_service.dto.user.UserRequestDto;
 import com.electrodostore.auth_service.dto.user.UserResponseDto;
 import com.electrodostore.auth_service.exception.InvalidRoleAssignmentException;
+import com.electrodostore.auth_service.exception.UnauthorizedOperationException;
 import com.electrodostore.auth_service.exception.UserNotFoundException;
 import com.electrodostore.auth_service.exception.UsernameAlreadyExistsException;
 import com.electrodostore.auth_service.integration.cliente.ClienteIntegrationService;
@@ -118,6 +120,7 @@ public class UserService implements IUserService {
         );
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserResponseDto findMe() {
 
@@ -126,6 +129,24 @@ public class UserService implements IUserService {
         );
 
         return buildUserResponse(user);
+    }
+
+    @Transactional
+    @Override
+    public UserResponseDto updateUsername(UpdateUsernameRequestDto objUpdateUsername) {
+        //Busca al usuario que se encuentra autenticado
+        UserSec user = findUser(
+                getAuthenticatedUserId()
+        );
+
+        //Verifica que las contraseñas coincidan y actualiza el username del usuario
+        if(passwordEncoder.matches(objUpdateUsername.password(), user.getPassword())){
+            user.setUsername(objUpdateUsername.newUsername());
+
+            return buildUserResponse(user);
+        }
+
+        throw new UnauthorizedOperationException("Contraseña incorrecta");
     }
 
     @Transactional

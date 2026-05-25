@@ -1,6 +1,7 @@
 package com.electrodostore.auth_service.service;
 
 import com.electrodostore.auth_service.dto.user.ClientUserRequestDto;
+import com.electrodostore.auth_service.dto.user.UpdateUsernameRequestDto;
 import com.electrodostore.auth_service.dto.user.UserRequestDto;
 import com.electrodostore.auth_service.dto.user.UserResponseDto;
 
@@ -11,12 +12,6 @@ public interface IUserService {
     List<UserResponseDto> findAll();
 
     UserResponseDto findUserById(Long id);
-
-    /**
-     * Expone exclusivamente los datos del usuario autenticado (ownership)
-     * evitando que un usuario acceda sin autorización a los datos de otros
-     */
-    UserResponseDto findMe();
 
     /**
      * Registrar usuarios administrativos.
@@ -39,12 +34,12 @@ public interface IUserService {
 
     /**
      * La identidad del usuario autenticado se obtiene desde el SecurityContext
-     * para evitar modificaciones o consultas sobre cuentas  ajenas.
+     * para evitar modificaciones o consultas sobre cuentas ajenas.
      */
     //Método para consultar los datos del usuario que está autenticado en el contexto de seguridad (ownership)
-//    UserResponseDto findMe();
-//    //Actualizar username de usuario autenticado
-//    UserResponseDto updateUsername(UpdateUsernameRequestDto objUpdateUsername);
-//    //Actualizar contraseña de usuario autenticado
+    UserResponseDto findMe();
+    //Actualizar username de usuario autenticado
+    UserResponseDto updateUsername(UpdateUsernameRequestDto objUpdateUsername);
+    //Actualizar contraseña de usuario autenticado
 //    void updatePassword(UpdatePasswordRequestDto objUpdatePassword);
 }

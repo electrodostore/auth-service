@@ -1,12 +1,14 @@
 package com.electrodostore.auth_service.controller;
 
 import com.electrodostore.auth_service.dto.user.ClientUserRequestDto;
+import com.electrodostore.auth_service.dto.user.UpdateUsernameRequestDto;
 import com.electrodostore.auth_service.dto.user.UserRequestDto;
 import com.electrodostore.auth_service.dto.user.UserResponseDto;
 import com.electrodostore.auth_service.service.IUserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +44,13 @@ public class UserController {
     public ResponseEntity<UserResponseDto> findMe(){
         return ResponseEntity.ok(
                 userService.findMe()
+        );
+    }
+
+    @PostMapping("/update-username")
+    public ResponseEntity<UserResponseDto> updateMyUsername(@Valid @RequestBody UpdateUsernameRequestDto updateUsername){
+        return ResponseEntity.ok(
+                userService.updateUsername(updateUsername)
         );
     }
 
