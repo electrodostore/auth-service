@@ -1,9 +1,6 @@
 package com.electrodostore.auth_service.service;
 
-import com.electrodostore.auth_service.dto.user.ClientUserRequestDto;
-import com.electrodostore.auth_service.dto.user.UpdateUsernameRequestDto;
-import com.electrodostore.auth_service.dto.user.UserRequestDto;
-import com.electrodostore.auth_service.dto.user.UserResponseDto;
+import com.electrodostore.auth_service.dto.user.*;
 import com.electrodostore.auth_service.exception.InvalidRoleAssignmentException;
 import com.electrodostore.auth_service.exception.UnauthorizedOperationException;
 import com.electrodostore.auth_service.exception.UserNotFoundException;
@@ -147,6 +144,25 @@ public class UserService implements IUserService {
         }
 
         throw new UnauthorizedOperationException("Contraseña incorrecta");
+    }
+
+    @Transactional
+    @Override
+    public void updatePassword(UpdatePasswordRequestDto objUpdatePassword) {
+        UserSec user = findUser(
+          getAuthenticatedUserId()
+        );
+
+        //Verifica que las contraseñas coincidan
+        boolean verifier = passwordEncoder.matches(objUpdatePassword.currentPassword(), user.getPassword());
+
+        if(!verifier){
+            throw new UnauthorizedOperationException("Contraseña incorrecta");
+        }
+
+        user.setPassword(
+                passwordEncoder.encode(objUpdatePassword.newPassword())
+        );
     }
 
     @Transactional

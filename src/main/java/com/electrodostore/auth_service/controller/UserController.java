@@ -1,9 +1,6 @@
 package com.electrodostore.auth_service.controller;
 
-import com.electrodostore.auth_service.dto.user.ClientUserRequestDto;
-import com.electrodostore.auth_service.dto.user.UpdateUsernameRequestDto;
-import com.electrodostore.auth_service.dto.user.UserRequestDto;
-import com.electrodostore.auth_service.dto.user.UserResponseDto;
+import com.electrodostore.auth_service.dto.user.*;
 import com.electrodostore.auth_service.service.IUserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -52,6 +49,12 @@ public class UserController {
         return ResponseEntity.ok(
                 userService.updateUsername(updateUsername)
         );
+    }
+
+    @PostMapping("/update-password")
+    public ResponseEntity<UserResponseDto> updateMyPassword(@Valid @RequestBody UpdatePasswordRequestDto updatePassword){
+        userService.updatePassword(updatePassword);
+        return ResponseEntity.noContent().build();
     }
 
     //Registro administrativo de usuarios

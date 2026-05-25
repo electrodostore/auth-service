@@ -1,9 +1,6 @@
 package com.electrodostore.auth_service.service;
 
-import com.electrodostore.auth_service.dto.user.ClientUserRequestDto;
-import com.electrodostore.auth_service.dto.user.UpdateUsernameRequestDto;
-import com.electrodostore.auth_service.dto.user.UserRequestDto;
-import com.electrodostore.auth_service.dto.user.UserResponseDto;
+import com.electrodostore.auth_service.dto.user.*;
 
 import java.util.List;
 
@@ -41,5 +38,5 @@ public interface IUserService {
     //Actualizar username de usuario autenticado
     UserResponseDto updateUsername(UpdateUsernameRequestDto objUpdateUsername);
     //Actualizar contraseña de usuario autenticado
-//    void updatePassword(UpdatePasswordRequestDto objUpdatePassword);
+    void updatePassword(UpdatePasswordRequestDto objUpdatePassword);
 }
