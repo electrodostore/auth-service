@@ -10,8 +10,11 @@ import com.electrodostore.auth_service.integration.cliente.ClienteIntegrationSer
 import com.electrodostore.auth_service.model.Role;
 import com.electrodostore.auth_service.model.UserSec;
 import com.electrodostore.auth_service.repository.IUserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,6 +87,23 @@ public class UserService implements IUserService {
         }
     }
 
+    /**
+     * Obtiene la identidad del usuario autenticado desde el contexto de seguridad
+     * y retorna su id de registro
+     */
+    private Long getAuthenticatedUserId(){
+        //Busca objeto Authentication con la información contenida en el token
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        //Saca la identidad del usuario para conocer el usuario que está autenticado
+        Jwt principal = (Jwt) authentication.getPrincipal();
+
+        //Extraemos el id del usuario para consultar sus datos
+        Number userId = principal.getClaim("userId");
+
+        return userId.longValue();
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<UserResponseDto> findAll() {
@@ -96,6 +116,16 @@ public class UserService implements IUserService {
         return buildUserResponse(
                 findUser(id)
         );
+    }
+
+    @Override
+    public UserResponseDto findMe() {
+
+        UserSec user = findUser(
+                getAuthenticatedUserId()
+        );
+
+        return buildUserResponse(user);
     }
 
     @Transactional

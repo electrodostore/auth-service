@@ -13,6 +13,12 @@ public interface IUserService {
     UserResponseDto findUserById(Long id);
 
     /**
+     * Expone exclusivamente los datos del usuario autenticado (ownership)
+     * evitando que un usuario acceda sin autorización a los datos de otros
+     */
+    UserResponseDto findMe();
+
+    /**
      * Registrar usuarios administrativos.
      * NOTA: no se registran usuario que son clientes por este flujo
      */
