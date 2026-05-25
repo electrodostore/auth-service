@@ -82,4 +82,12 @@ public class GlobalExceptionHandler {
                         buildResponseError(HttpStatus.NOT_FOUND, ex.getMessage(), ex.getErrorCode())
                 );
     }
+
+    @ExceptionHandler(UnauthorizedOperationException.class)
+    public ResponseEntity<ApiErrorResponse> handlerUnauthorizedOperation(UnauthorizedOperationException ex){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(
+                        buildResponseError(HttpStatus.FORBIDDEN, ex.getMessage(), ex.getErrorCode())
+                );
+    }
 }
