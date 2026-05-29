@@ -5,7 +5,7 @@ import com.electrodostore.auth_service.dto.role.RoleResponseDto;
 import java.util.List;
 
 public record UserResponseDto (Long id,
-                               String RoleName,
+                               String username,
                                List<RoleResponseDto> roles,
                                Long clientId,
                                boolean unabled){
