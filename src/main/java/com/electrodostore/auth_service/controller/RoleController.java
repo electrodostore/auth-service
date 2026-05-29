@@ -14,7 +14,7 @@ import java.util.List;
 
 //Define endpoints o rutas de acceso a las operaciones de la entidad Role
 @RestController
-@RequestMapping("/auth/roles")
+@RequestMapping("/roles")
 public class RoleController {
 
     private final IRoleService roleService;
@@ -39,18 +39,18 @@ public class RoleController {
                 .body(roleService.saveRole(newRole));
     }
 
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}/disable")
     public ResponseEntity<Void> disableRole(@PathVariable Long id) {
         roleService.disableRole(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{idRole}/add-permissions")
+    @PostMapping("/{idRole}/permissions")
     public ResponseEntity<RoleResponseDto> addPermissionToRole(@PathVariable Long idRole, @RequestBody @NotEmpty List<@NotBlank String> newPermissionsNames){
         return ResponseEntity.ok(roleService.addPermissionsToRole(idRole, newPermissionsNames));
     }
 
-    @DeleteMapping("/{idRole}/remove-permissions")
+    @DeleteMapping("/{idRole}/permissions")
     public ResponseEntity<RoleResponseDto> deletePermissionsFromRole(@PathVariable Long idRole, @RequestBody @NotEmpty List<@NotBlank String> removePermissionsNames){
         return ResponseEntity.ok(
                 roleService.removePermissionsFromRole(idRole, removePermissionsNames)

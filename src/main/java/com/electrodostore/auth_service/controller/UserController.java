@@ -14,7 +14,7 @@ import java.util.List;
 
 //Controlador para recibir las request de componente Users
 @RestController
-@RequestMapping("/auth/users")
+@RequestMapping("/users")
 public class UserController {
 
     private final IUserService userService;
@@ -44,14 +44,14 @@ public class UserController {
         );
     }
 
-    @PostMapping("/update-username")
+    @PatchMapping("/me/username")
     public ResponseEntity<UserResponseDto> updateMyUsername(@Valid @RequestBody UpdateUsernameRequestDto updateUsername){
         return ResponseEntity.ok(
                 userService.updateUsername(updateUsername)
         );
     }
 
-    @PostMapping("/update-password")
+    @PatchMapping("/me/password")
     public ResponseEntity<UserResponseDto> updateMyPassword(@Valid @RequestBody UpdatePasswordRequestDto updatePassword){
         userService.updatePassword(updatePassword);
         return ResponseEntity.noContent().build();
@@ -59,32 +59,23 @@ public class UserController {
 
     //Registro administrativo de usuarios
     @PostMapping
-    public ResponseEntity<UserResponseDto> saveUser(@Valid @RequestBody UserRequestDto newUser){
+    public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto newUser){
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userService.saveUser(newUser));
     }
 
-    //Registro públicos de clientes autenticables
-    @PostMapping("/register")
-    public ResponseEntity<UserResponseDto> saveClientUser(@Valid @RequestBody ClientUserRequestDto newClientUser){
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(
-                        userService.registerClientUser(newClientUser)
-                );
-    }
-
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}/disable")
     public ResponseEntity<Void> disableUser(@PathVariable Long id){
         userService.disableUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{userId}/add-roles")
+    @PostMapping("/{userId}/roles")
     public ResponseEntity<UserResponseDto> addRolesToUser(@PathVariable Long userId, @RequestBody @NotEmpty List<@NotBlank String> newRolesNames){
         return ResponseEntity.ok(userService.addRolesToUser(userId, newRolesNames));
     }
 
-    @DeleteMapping("/{userId}/remove-roles")
+    @DeleteMapping("/{userId}/roles")
     public ResponseEntity<UserResponseDto> removeRoles(@PathVariable Long userId, @RequestBody @NotEmpty List<@NotBlank String> rolesNames){
         return ResponseEntity.ok(userService.removeRolesFromUser(userId, rolesNames));
     }
