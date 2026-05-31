@@ -2,7 +2,8 @@ package com.electrodostore.auth_service.exception;
 
 import lombok.Getter;
 
-/**Excepción de infraestructura de seguridad para indicar que un nombre de usuario
+/**
+ * Excepción de infraestructura de seguridad para indicar que un nombre de usuario
  *  ya está dentro de un registro en la base de datos
  */
 @Getter

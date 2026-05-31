@@ -51,13 +51,11 @@ public class PermissionService implements IPermissionService {
                 .toList();
     }
 
-    //Método para consultar una lista de permisos por sus ids
-    @Transactional(readOnly = true)
     @Override
     public List<Permission> findAllPermissionsByNames(Set<String> rolesNames){
         List<Permission> foundPermissions = permissionRepo.findAllByNameIn(rolesNames);
 
-        //En caso de que no se encuentren todos los permisos que se consultaron, excepción indicándolo
+        //Valida carga completa de los permisos.
         if(foundPermissions.size() < rolesNames.size()){throw new PermissionNotFoundException("Uno o varios permisos no fueron encontrados");}
 
         return foundPermissions;

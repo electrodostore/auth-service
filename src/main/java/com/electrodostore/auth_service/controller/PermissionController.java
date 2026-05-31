@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//Define endpoints o rutas de acceso a las operaciones de la entidad Permission
 @RestController
 @RequestMapping("/permissions")
 public class PermissionController {

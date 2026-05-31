@@ -9,7 +9,6 @@ import lombok.Setter;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-//Entidad para el registro de usuarios
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,26 +20,27 @@ public class UserSec {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    //No debe haber dos usuarios con el mismo username
+
+    //Nombre de usuario único para la autenticación del usuario.
     @Column(unique = true, nullable = false)
     private String username;
+
     @Column(nullable = false)
     private String password;
-    //Referencia lógica al cliente asociado con los usuarios que son clientes
+
+    // Identidad del cliente asociada a usuarios con rol CLIENT.
     private Long clienteId;
-    //Relación ManyToMany con tipo de carga ansiosa (Cuando se carga un usuario, se cargan sus roles)
+
+    //Roles asignados al usuario
     @ManyToMany(fetch = FetchType.EAGER)
-    //Definimos propiedades de tabla intermedia
-    //joinColumns() -> FK que hace referencia al lado dueño de la relación (UserSec)
-    //inverseJoinColums() -> FK que hace referencia al otro lado, o lado inverso de la relación (Role)
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
+    @JoinTable(name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     Set<Role> listRoles = new LinkedHashSet<>();
 
-    //Columnas para gestionar el estado del usuario (Al momento de la creación todas serán positivas)
-    private boolean enabled=true;  //Si no ha sido eliminado o deshabilitado
-    private boolean accountNotExpired=true; //Si la cuenta no ha expirado
-    private boolean accountNotLocked=true;  //Si la cuenta no está bloqueada
-    private boolean credentialNotExpired=true;  //Si las credenciales no han expirado
+    private boolean enabled=true;
+    private boolean accountNotExpired=true;
+    private boolean accountNotLocked=true;
+    private boolean credentialNotExpired=true;
 
 }

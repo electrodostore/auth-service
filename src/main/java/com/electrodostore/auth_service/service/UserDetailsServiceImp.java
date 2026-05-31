@@ -1,7 +1,5 @@
 package com.electrodostore.auth_service.service;
 
-import com.electrodostore.auth_service.model.Permission;
-import com.electrodostore.auth_service.model.Role;
 import com.electrodostore.auth_service.model.UserSec;
 import com.electrodostore.auth_service.repository.IUserRepository;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,7 +22,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
         this.userRepo = userRepo;
     }
 
-    //Valida existencia de usuario y consulta los detalles de este en la base de datos
+    //Valida existencia de usuario y consulta sus detalles en la base de datos
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //Busca usuario por username y en caso de que no exista lanza AuthenticationException
@@ -35,26 +33,25 @@ public class UserDetailsServiceImp implements UserDetailsService {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        /**
-         * Recorre la lista de roles del usuario y por cada elemento crea un objeto GrantedAuthority con el
-         * prefijo "ROLE_" y el nombre del rol
-         */
+        /*Recorre la lista de roles del usuario y por cada elemento crea un objeto GrantedAuthority con el
+         * prefijo "ROLE_" y el nombre del rol*/
         user.getListRoles().forEach(
-                role -> authorities.add(new SimpleGrantedAuthority("ROLE_".concat(role.getName())))
+                role -> authorities.add(
+                        new SimpleGrantedAuthority("ROLE_".concat(role.getName()))
+                )
         );
 
-        /**
-         * Aplana las listas de permisos de cada rol, formando una única lista, la cual recorre y por cada permiso
-         * crea un objeto GrantedAuthority con el nombre de este y lo agrega a la lista de autoridades
-         */
+        /*Aplana las listas de permisos de cada rol, formando una única lista, la cual recorre y por cada permiso
+         * crea un objeto GrantedAuthority con el nombre de esta y lo agrega a la lista de autoridades*/
         user.getListRoles()
                 .stream()
                 .flatMap(role -> role.getListPermissions().stream())
                 .forEach(
-                    permission -> authorities.add(new SimpleGrantedAuthority(permission.getName()))
+                    permission -> authorities.add(
+                            new SimpleGrantedAuthority(permission.getName())
+                    )
                 );
 
-        //Se retornan detaller del usuario
         return new User(
                 user.getUsername(),
                 user.getPassword(),

@@ -22,7 +22,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-//Service encargado de la lógica de negocio del dominio <<User>>
 @Service
 public class UserService implements IUserService {
 
@@ -38,14 +37,20 @@ public class UserService implements IUserService {
         this.clienteIntegration = clienteIntegration;
     }
 
-    //Método propio para validar si un username asignado a un usuario no existe ya en la base de datos
+    /**
+     * válida que un nombre de usuario no se duplique
+     * para mantener la consistencia de la lógica
+     * de negocio.
+     * */
     private void validarUsername(String username){
         if (userRepo.existsByUsername(username)) {
             throw new UsernameAlreadyExistsException("Ya existe usuario con username: " + username + ", intente con otro");
         }
     }
 
-    //Construye el DTO de respuesta para exponer los datos de un usuario
+    /**
+     * Construye DTO de respuesta usado para exponer usuarios
+     */
     private UserResponseDto buildUserResponse(UserSec objUser) {
 
         return new UserResponseDto(objUser.getId(),
@@ -58,7 +63,9 @@ public class UserService implements IUserService {
         );
     }
 
-    //Construye una lista de DTOs de respuesta a partir de una lista de usuarios
+    /**
+     * Construye una lista de DTOs de respuesta de usuarios
+     */
     private List<UserResponseDto> buildUsersResponse(List<UserSec> listUsers) {
 
         List<UserResponseDto> usersResponse = new ArrayList<>();
@@ -70,7 +77,9 @@ public class UserService implements IUserService {
         return usersResponse;
     }
 
-    //Busca un usuario por su ID o lanza excepción si no existe
+    /**
+     * Busca un usuario por su ID o lanza excepción si no existe
+     */
     private UserSec findUser(Long id) {
         return userRepo.findById(id)
                 .orElseThrow(
@@ -79,7 +88,9 @@ public class UserService implements IUserService {
     }
 
 
-    //Valida que el usuario se encuentre habilitado
+    /**
+     * Valida que el usuario se encuentre habilitado.
+     */
     private void validarDisponibilidadUser(UserSec user) {
         if (!user.isEnabled()) {
             throw new UserNotFoundException("No no encontró usuario con id: " + user.getId());
@@ -91,13 +102,13 @@ public class UserService implements IUserService {
      * y retorna su id de registro
      */
     private Long getAuthenticatedUserId(){
-        //Busca objeto Authentication con la información contenida en el token
+        //Busca autenticación actual del usuario
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        //Saca la identidad del usuario para conocer el usuario que está autenticado
+        //Recupera la identidad del usuario
         Jwt principal = (Jwt) authentication.getPrincipal();
 
-        //Extraemos el id del usuario para consultar sus datos
+        //Busca claim con el id del usuario
         Number userId = principal.getClaim("userId");
 
         return userId.longValue();
@@ -177,7 +188,6 @@ public class UserService implements IUserService {
             throw new InvalidRoleAssignmentException("Los usuarios con el rol CLIENTE deben registrarse a través del flujo de registro de clientes");
         }
 
-        //Construcción de la entidad Usuario
         UserSec objUser = new UserSec();
 
         objUser.setUsername(newUser.username());
@@ -206,6 +216,7 @@ public class UserService implements IUserService {
         //Verificar que el username no se encuentre registrado
         validarUsername(clientUserDTO.username());
 
+        //Registra cliente en cliente-service
         Long clientId = clienteIntegration.saveCliente(
                 clientUserDTO.client()
         );
@@ -216,7 +227,7 @@ public class UserService implements IUserService {
         newUser.setPassword(passwordEncoder.encode(clientUserDTO.password()));
         newUser.setClienteId(clientId);
 
-        //Asigna rol "CLIENT" al usuario automáticamente
+        //Asigna rol "CLIENT" al usuario
         newUser.setListRoles(
                 new LinkedHashSet<>(
                         roleService.findAllRolesByNames(Set.of("CLIENT"))
@@ -240,7 +251,7 @@ public class UserService implements IUserService {
             clienteIntegration.disableClient(objUser.getClienteId());
         }
 
-        //Deshabilitación lógica de la cuenta del usuario
+        //Deshabilitación de la cuenta del usuario
         objUser.setEnabled(false);
 
 

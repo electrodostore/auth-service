@@ -5,5 +5,6 @@ import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
 
-public record RoleRequestDto(@NotBlank String roleName, @NotEmpty List<@NotBlank String> permissions) {
-}
+public record RoleRequestDto(
+        @NotBlank String roleName,
+        @NotEmpty List<@NotBlank String> permissions){}

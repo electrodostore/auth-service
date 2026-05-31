@@ -40,11 +40,16 @@ public class ClienteIntegrationService {
 
     public Long fallbackSaveCliente(ClientRequestDto clienteNuevo, Throwable ex){
 
+        //Informa el error de infraestructura en la integración
         log.warn("Fallback activado para método saveCliente", ex);
         throw new ServiceUnavailable("No fue posible establecer la comunicación con cliente-service, " +
                 "intente de nuevo mas tarde");
     }
 
+    /**
+     * Deshabilita un cliente en cliente-service y
+     * protege la integración con Circuit Breaker y Retry
+     */
     @CircuitBreaker(name = "cliente-service", fallbackMethod = "fallbackDisableClient")
     @Retry(name = "cliente-service")
     public void disableClient(Long clientId){
@@ -53,11 +58,12 @@ public class ClienteIntegrationService {
 
     public void fallbackDisableClient(Long clientId, Throwable ex){
 
-        //Si el error es conocido, se lanza la excepción de dominio
+        //Se propagan errores conocidos del negocio
         if(ex instanceof DomainException e){
             throw e;
         }
 
+        //Informa el error de infraestructura en la integración.
         log.warn("Fallback activado para método disableCliente, clientId={}", clientId, ex);
         throw new ServiceUnavailable("No fue posible establecer la comunicación con cliente-service, " +
                 "intente de nuevo mas tarde");

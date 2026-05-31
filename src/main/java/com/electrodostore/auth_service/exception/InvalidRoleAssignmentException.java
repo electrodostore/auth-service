@@ -2,7 +2,10 @@ package com.electrodostore.auth_service.exception;
 
 import lombok.Getter;
 
-// Enviar una Response de error para informar que un rol no puede ser asignado a un usuario
+/**
+ * Excepción personalizada para informar que un rol no
+ * puede ser asignado a un usuario
+ */
 @Getter
 public class InvalidRoleAssignmentException extends DomainException {
     private final ErrorCode errorCode;

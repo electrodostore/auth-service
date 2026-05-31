@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Set;
 
-//Contrato con Spring-Data-Jpa para acceder a los diferentes métodos de persistencia y consulta que se definen en la interfaz JpaRepository<>
+/**
+ * Repositorio de datos para entidad Permission
+ */
 @Repository
 public interface IPermissionRepository extends JpaRepository<Permission, Long> {
 

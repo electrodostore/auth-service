@@ -7,10 +7,14 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Set;
 
-//Repositorio de persistencia y consulta basado en la interfaz definida por Spring Data: JpaRepository<>
+/**
+ * Repositorio de datos para entidad Role
+ * */
 @Repository
 public interface IRoleRepository extends JpaRepository<Role, Long> {
 
-    //Busca roles por sus nombres
+    /**
+     * Busca roles por sus nombres
+     */
     List<Role> findAllByNameIn(Set<String> roleNames);
 }

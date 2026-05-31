@@ -11,18 +11,16 @@ public interface IUserService {
     UserResponseDto findUserById(Long id);
 
     /**
-     * Registrar usuarios administrativos.
+     * Registro administrativo de usuarios.
      * NOTA: no se registran usuario que son clientes por este flujo
      */
     UserResponseDto saveUser(UserRequestDto newUser);
 
     /**
-     * Método de registro público de usuarios, cuyos usuarios registrados serán
-     * catalogados con rol CLIENTE automáticamente
+     * Método de registro público de clientes autenticables
      */
     UserResponseDto registerClientUser(ClientUserRequestDto clientUserDTO);
 
-    //Soft Delete
     void disableUser(Long id);
 
     UserResponseDto addRolesToUser(Long userId, List<String> newRolesNames);
@@ -33,10 +31,7 @@ public interface IUserService {
      * La identidad del usuario autenticado se obtiene desde el SecurityContext
      * para evitar modificaciones o consultas sobre cuentas ajenas.
      */
-    //Método para consultar los datos del usuario que está autenticado en el contexto de seguridad (ownership)
     UserResponseDto findMe();
-    //Actualizar username de usuario autenticado
     UserResponseDto updateUsername(UpdateUsernameRequestDto objUpdateUsername);
-    //Actualizar contraseña de usuario autenticado
     void updatePassword(UpdatePasswordRequestDto objUpdatePassword);
 }

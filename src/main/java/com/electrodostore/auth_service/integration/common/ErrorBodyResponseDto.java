@@ -6,15 +6,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * DTO para mapear respuestas de error provenientes de otros servicios
+ */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+//Ignora propiedades de la respuesta de error no definidas en este dominio
 @JsonIgnoreProperties(ignoreUnknown = true)
-//DTO para mapear respuestas de error provenientes de otros servicios
 public class ErrorBodyResponseDto {
 
-    //Campos mínimos necesarios para interpretar el error remoto
     private String errorCode;
     private String mensaje;
 }

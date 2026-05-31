@@ -19,53 +19,37 @@ import java.io.InputStream;
 @Slf4j
 public class ClienteErrorDecoder implements ErrorDecoder {
 
-    //Objeto usado para deserializar el body de la response de error
     private final ObjectMapper objMapper = new ObjectMapper();
 
     /**
-     * Retorna la excepción que Feign propagará al método que realizó la petición.
-     *
-     * - Si el error remoto es reconocido, se transforma en una excepción de dominio.
-     * - Si el error no puede interpretarse, se retorna la excepción genérica de Feign.
-     *
-     * methodKey -> nombre del método FeignClient que realizó la petición
-     * response  -> response HTTP completa retornada por el servicio remoto
+     * Intenta traducir la respuesta de error de Feign a excepción
+     * conocida de dominio, si no es posible retorna excepción Feign
+     * predeterminada.
      */
     @Override
     public Exception decode(String methodKey, Response response) {
         try{
-
-            //Obtiene el body de la response para deserializarlo
+            //Lee y mapea el cuerpo de la respuesta a DTO de error
             InputStream bodyIn = response.body().asInputStream();
-
-            //Reconstruye el body JSON y lo transforma al DTO de error
             ErrorBodyResponseDto error = objMapper.readValue(bodyIn, ErrorBodyResponseDto.class);
 
             //Solo interpretamos errores NOT_FOUND provenientes del servicio remoto
             if(response.status() == 404){
 
-                //Identifica el recurso que no fue encontrado a partir del errorCode recibido
+                // Intenta mapear la respuesta de error a excepción de negocio
                 switch (ErrorCode.valueOf(error.getErrorCode())){
 
-                    //Transforma el error remoto en una excepción de dominio local
                     case CLIENT_NOT_FOUND:
                         return new ClienteNotFoundException(error.getMensaje());
 
-                    /*
-                     * Actualmente cliente-service solo expone errores
-                     * relacionados con clientes no encontrados.
-                     */
                 }
             }
 
-            //Si el error no puede interpretarse, se retorna la excepción genérica de Feign
             return FeignException.errorStatus(methodKey, response);
 
+            //Si hay algún problema leyendo el cuerpo de la respuesta, se retorna excepción Feign original
         }catch(IOException ex){
-
-            //Error al leer o deserializar el body de la response
             log.error("Problema leyendo el body de la response", ex);
-
             return FeignException.errorStatus(methodKey, response);
         }
 

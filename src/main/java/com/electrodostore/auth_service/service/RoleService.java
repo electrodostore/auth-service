@@ -13,7 +13,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-//Service encargado de la lógica de negocio del dominio <<Role>>
 @Service
 public class RoleService implements IRoleService{
 
@@ -25,7 +24,9 @@ public class RoleService implements IRoleService{
         this.permissionService = permissionService;
     }
 
-    //Construye el DTO de respuesta a partir de los datos de un rol
+    /**
+     * Construye DTO de respuesta para exponer un rol
+     */
     private RoleResponseDto buildRoleResponse(Role objRole){
         return new RoleResponseDto(
                 objRole.getId(), objRole.getName(),
@@ -39,25 +40,35 @@ public class RoleService implements IRoleService{
         );
     }
 
-    //Valida que el rol se encuentre activo
+    /**
+     * Valida que el rol se encuentre activo
+     */
     private void validarEstadoDeRol(Role objRole){
-        if(!objRole.isActive()){throw new RoleNotFoundException("No se encontró rol con nombre: " + objRole.getName() + " disponible");}
+        if(!objRole.isActive()){
+            throw new RoleNotFoundException("No se encontró rol con nombre: " + objRole.getName() + " disponible");
+        }
     }
 
-    //Construye una lista de DTOs de respuesta a partir de una lista de roles
+    /**
+     * Construye una lista de DTOs de respuesta para exponer roles
+     */
     @Override
     public List<RoleResponseDto> buildRolesResponse(List<Role> listRoles){
 
         List<RoleResponseDto> rolesExponer = new ArrayList<>();
 
         listRoles.forEach(
-                role -> rolesExponer.add(buildRoleResponse(role))
+                role -> rolesExponer.add(
+                        buildRoleResponse(role)
+                )
         );
 
         return rolesExponer;
     }
 
-    //Busca un rol por su ID o lanza excepción si no existe
+    /**
+     * Busca un rol por su ID o lanza excepción si no existe
+     */
     private Role findRole(Long id){
         return roleRepo.findById(id)
                 .orElseThrow(
@@ -68,7 +79,6 @@ public class RoleService implements IRoleService{
     @Transactional(readOnly = true)
     @Override
     public List<Role> findAllRolesByNames(Set<String> rolesNames){
-        //Lista de roles encontrados
         List<Role> foundRoles = roleRepo.findAllByNameIn(rolesNames);
 
         //Validamos que se haya hecho la carga total de los roles solicitados
@@ -76,7 +86,7 @@ public class RoleService implements IRoleService{
             throw new RoleNotFoundException("Uno o varios roles no fueron encontrados");
         }
 
-        //Iteramos sobre la lista y validamos que todos los roles se encuentren activos
+        //Valid que todos los roles se encuentren activos
         foundRoles.forEach(
                 this::validarEstadoDeRol
         );
@@ -87,7 +97,9 @@ public class RoleService implements IRoleService{
     @Transactional(readOnly = true)
     @Override
     public List<RoleResponseDto> findAllRoles() {
-        return buildRolesResponse(roleRepo.findAll());
+        return buildRolesResponse(
+                roleRepo.findAll()
+        );
     }
 
     @Transactional(readOnly = true)
@@ -103,11 +115,16 @@ public class RoleService implements IRoleService{
     @Override
     public RoleResponseDto saveRole(RoleRequestDto newRole) {
 
-        Role objRole = new Role(null, newRole.roleName(),
+        Role objRole = new Role(
+                null,
+                newRole.roleName(),
+                //Busca y asigna los permisos enviados en la petición
                 new LinkedHashSet<>(
-
-                        //Busca y asigna los permisos enviados en la petición
-                        permissionService.findAllPermissionsByNames(new LinkedHashSet<>(newRole.permissions()))),
+                        permissionService.findAllPermissionsByNames(
+                                new LinkedHashSet<>(newRole.permissions()
+                                )
+                        )
+                ),
 
                 true
         );
@@ -123,7 +140,6 @@ public class RoleService implements IRoleService{
 
         Role objRole = findRole(id);
 
-        //Desactivación lógica del rol usando Soft Delete
         objRole.setActive(false);
     }
 
@@ -137,7 +153,9 @@ public class RoleService implements IRoleService{
 
         //Agrega al rol los nuevos permisos encontrados
         objRole.getListPermissions().addAll(
-                permissionService.findAllPermissionsByNames(new LinkedHashSet<>(newPermissionsNames))
+                permissionService.findAllPermissionsByNames(
+                        new LinkedHashSet<>(newPermissionsNames)
+                )
         );
 
         return buildRoleResponse(objRole);

@@ -1,6 +1,6 @@
 package com.electrodostore.auth_service.exception;
 
-//Identificadores de errores de dominio expuestos por el servicio
+//Identificadores de errores conocidos expuestos por el servicio
 public enum ErrorCode {
 
     ROLE_NOT_FOUND,

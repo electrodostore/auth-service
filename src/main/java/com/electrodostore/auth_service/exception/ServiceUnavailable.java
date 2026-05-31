@@ -2,7 +2,11 @@ package com.electrodostore.auth_service.exception;
 
 import lombok.Getter;
 
-//Informa al cliente ante un error en la comunicación con un servicio externo
+/**
+ * Excepción personalizada para indicar que hubo
+ * un problema de infraestructura en la integración
+ * con los microservicios,
+ */
 @Getter
 public class ServiceUnavailable extends RuntimeException {
     private final ErrorCode errorCode;
