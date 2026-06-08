@@ -239,3 +239,20 @@ Se utiliza manejo centralizado con `@RestControllerAdvice`, respuestas consisten
 | --- | --- | --- |
 | `GET` | `/permissions` | Listar todos los permisos |
 | `POST` | `/permissions` | Crear permiso |
+
+---
+
+## 🏛️ Principios arquitectónicos
+
+| Principio | Descripción |
+| --- | --- |
+| 🌐 **API Gateway** | Punto único de entrada al sistema |
+| 🔐 **Auth Service** | Autoridad central de identidad |
+| 🪙 **JWT + RSA256** | Autenticación distribuida sin estado |
+| ✅ **Validación local** | Los Resource Servers validan tokens con clave pública RSA, sin llamadas al Auth Service |
+| 🛡️ **RBAC** | Control de acceso basado en roles y permisos granulares |
+| 🔗 **OpenFeign** | Comunicación síncrona entre microservicios |
+| 🔍 **Eureka** | Descubrimiento dinámico de servicios |
+| 🔌 **Resilience4j** | Resiliencia mediante Retry y Circuit Breaker |
+
+> ⚠️ El sistema evita dependencias en tiempo de ejecución entre Auth Service y los Resource Servers durante el proceso de autorización.
