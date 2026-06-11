@@ -17,4 +17,6 @@ public interface IPermissionRepository extends JpaRepository<Permission, Long> {
      * Busca permisos por sus nombres
      */
     List<Permission> findAllByNameIn(Set<String> permissionName);
+
+    boolean existsByName(String name);
 }

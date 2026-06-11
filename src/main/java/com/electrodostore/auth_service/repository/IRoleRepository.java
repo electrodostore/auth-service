@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -17,4 +18,8 @@ public interface IRoleRepository extends JpaRepository<Role, Long> {
      * Busca roles por sus nombres
      */
     List<Role> findAllByNameIn(Set<String> roleNames);
+
+    Optional<Role> findByName(String admin);
+
+    boolean existsByName(String name);
 }
