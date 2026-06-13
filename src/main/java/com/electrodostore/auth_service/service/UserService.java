@@ -93,7 +93,7 @@ public class UserService implements IUserService {
      */
     private void validarDisponibilidadUser(UserSec user) {
         if (!user.isEnabled()) {
-            throw new UserNotFoundException("No no encontró usuario con id: " + user.getId());
+            throw new UserNotFoundException("Usuario con id: " + user.getId() + " no disponible");
         }
     }
 
